@@ -1,0 +1,13 @@
+test_expired_idempotence_window_does_not_post_again (tests.test_provider.ProviderContract.test_expired_idempotence_window_does_not_post_again) ... WARNING:root:������� 1: �Kassa: ���� ����������� ������� ����; ������� ������� � �������� ���������� � ������������ refund_id. ����� �������� �� ������������.
+ok
+test_known_id_is_verified_with_get_after_window (tests.test_provider.ProviderContract.test_known_id_is_verified_with_get_after_window) ... ok
+test_verified_response_completes_once (tests.test_provider.ProviderContract.test_verified_response_completes_once) ... ok
+test_wrong_payment_currency_amount_cannot_restore_stock (tests.test_provider.ProviderContract.test_wrong_payment_currency_amount_cannot_restore_stock) ... WARNING:root:������� 1: ����� �������� �� ������������� ��������� �������, ����� ��� ������
+WARNING:root:������� 1: ����� �������� �� ������������� ��������� �������, ����� ��� ������
+WARNING:root:������� 1: ����� �������� �� ������������� ��������� �������, ����� ��� ������
+ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 1.827s
+
+OK

@@ -1,0 +1,1791 @@
+{
+  "generated_at": "2026-10-29T17:59:49.854363+00:00",
+  "command": "python -m tests.acceptance --rounds 5 --buyers 20 --stock 1",
+  "tests": 16,
+  "passed": 14,
+  "errors": [],
+  "failures": [
+    [
+      "test_11_restart_refund_error_lost_response (tests.test_acceptance.Acceptance.test_11_restart_refund_error_lost_response)",
+      "Traceback (most recent call last):\n  File \"C:\\Users\\torho\\Documents\\Codex\\2026-10-29\\mini-app-x20-2\\outputs\\shawarma_bot\\tests\\test_acceptance.py\", line 271, in test_11_restart_refund_error_lost_response\n  File \"C:\\Users\\torho\\Documents\\Codex\\2026-10-29\\mini-app-x20-2\\outputs\\shawarma_bot\\tests\\test_acceptance.py\", line 148, in eventually\n    got=fn()\nAssertionError: 'refund_pending' != 'refunded'\n- refund_pending\n?       -- - ---\n+ refunded\n\n"
+    ],
+    [
+      "test_15_confirmed_refund_only (tests.test_acceptance.Acceptance.test_15_confirmed_refund_only)",
+      "Traceback (most recent call last):\n  File \"C:\\Users\\torho\\Documents\\Codex\\2026-10-29\\mini-app-x20-2\\outputs\\shawarma_bot\\tests\\test_acceptance.py\", line 319, in test_15_confirmed_refund_only\n    def test_14_recipe_snapshots(self):\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\torho\\Documents\\Codex\\2026-10-29\\mini-app-x20-2\\outputs\\shawarma_bot\\tests\\test_acceptance.py\", line 148, in eventually\n    got=fn()\nAssertionError: 'refund_pending' != 'refunded'\n- refund_pending\n?       -- - ---\n+ refunded\n\n"
+    ]
+  ],
+  "scenarios": [
+    {
+      "scenario": "1. Цепочка остатков",
+      "expected": [
+        [
+          10,
+          0,
+          10
+        ],
+        [
+          10,
+          3,
+          7
+        ],
+        [
+          7,
+          0,
+          7
+        ],
+        [
+          7,
+          2,
+          5
+        ],
+        [
+          7,
+          0,
+          7
+        ],
+        [
+          10,
+          0,
+          10
+        ]
+      ],
+      "actual": [
+        [
+          10,
+          0,
+          10
+        ],
+        [
+          10,
+          3,
+          7
+        ],
+        [
+          7,
+          0,
+          7
+        ],
+        [
+          7,
+          2,
+          5
+        ],
+        [
+          7,
+          0,
+          7
+        ],
+        [
+          10,
+          0,
+          10
+        ]
+      ],
+      "stock": [
+        {
+          "product_id": 1,
+          "on_hand": 10,
+          "reserved": 0
+        },
+        {
+          "product_id": 2,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 3,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 4,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 5,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 6,
+          "on_hand": 0,
+          "reserved": 0
+        }
+      ],
+      "orders": [
+        {
+          "id": 1,
+          "user_id": 1,
+          "pay_status": "refunded",
+          "sale_accepted": 1,
+          "total": 3600
+        },
+        {
+          "id": 2,
+          "user_id": 2,
+          "pay_status": "expired",
+          "sale_accepted": 0,
+          "total": 2400
+        }
+      ],
+      "journal": [
+        {
+          "id": 1,
+          "product_id": 1,
+          "kind": "receipt",
+          "delta_hand": 10,
+          "delta_reserved": 0,
+          "order_id": null,
+          "occurred_at": 2000000000.0,
+          "author": "111",
+          "operation_key": "receive:111:initial-product-1"
+        },
+        {
+          "id": 2,
+          "product_id": 1,
+          "kind": "reserve",
+          "delta_hand": 0,
+          "delta_reserved": 3,
+          "order_id": 1,
+          "occurred_at": 2000000000.0,
+          "author": "1",
+          "operation_key": "reserve:1:1"
+        },
+        {
+          "id": 3,
+          "product_id": 1,
+          "kind": "sale",
+          "delta_hand": -3,
+          "delta_reserved": -3,
+          "order_id": 1,
+          "occurred_at": 2000000000.0,
+          "author": "payment",
+          "operation_key": "sale:1:1"
+        },
+        {
+          "id": 4,
+          "product_id": 1,
+          "kind": "reserve",
+          "delta_hand": 0,
+          "delta_reserved": 2,
+          "order_id": 2,
+          "occurred_at": 2000000000.0,
+          "author": "2",
+          "operation_key": "reserve:2:1"
+        },
+        {
+          "id": 5,
+          "product_id": 1,
+          "kind": "release",
+          "delta_hand": 0,
+          "delta_reserved": -2,
+          "order_id": 2,
+          "occurred_at": 2000000120.0,
+          "author": "system",
+          "operation_key": "release:2:1"
+        },
+        {
+          "id": 6,
+          "product_id": 1,
+          "kind": "return",
+          "delta_hand": 3,
+          "delta_reserved": 0,
+          "order_id": 1,
+          "occurred_at": 2000000120.0,
+          "author": "refund",
+          "operation_key": "return:1:1"
+        }
+      ],
+      "finance": [
+        {
+          "type": "receipt",
+          "amount_kop": 360000,
+          "order_id": 1,
+          "payment_id": 1
+        },
+        {
+          "type": "refund",
+          "amount_kop": 360000,
+          "order_id": 1,
+          "payment_id": 1
+        }
+      ]
+    },
+    {
+      "scenario": "2. Одна единица / 20 покупателей",
+      "expected": {
+        "success": 1,
+        "shortage": 19,
+        "rounds": 5
+      },
+      "actual": [
+        {
+          "round": 1,
+          "success": 1,
+          "shortage": 19
+        },
+        {
+          "round": 2,
+          "success": 1,
+          "shortage": 19
+        },
+        {
+          "round": 3,
+          "success": 1,
+          "shortage": 19
+        },
+        {
+          "round": 4,
+          "success": 1,
+          "shortage": 19
+        },
+        {
+          "round": 5,
+          "success": 1,
+          "shortage": 19
+        }
+      ],
+      "stock": [
+        {
+          "product_id": 1,
+          "on_hand": 1,
+          "reserved": 1
+        },
+        {
+          "product_id": 2,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 3,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 4,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 5,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 6,
+          "on_hand": 0,
+          "reserved": 0
+        }
+      ],
+      "orders": [
+        {
+          "id": 1,
+          "user_id": 6,
+          "pay_status": "awaiting_payment",
+          "sale_accepted": 0,
+          "total": 1200
+        }
+      ],
+      "journal": [
+        {
+          "id": 1,
+          "product_id": 1,
+          "kind": "receipt",
+          "delta_hand": 1,
+          "delta_reserved": 0,
+          "order_id": null,
+          "occurred_at": 2000000000.0,
+          "author": "111",
+          "operation_key": "receive:111:initial-product-1"
+        },
+        {
+          "id": 2,
+          "product_id": 1,
+          "kind": "reserve",
+          "delta_hand": 0,
+          "delta_reserved": 1,
+          "order_id": 1,
+          "occurred_at": 2000000000.0,
+          "author": "6",
+          "operation_key": "reserve:1:1"
+        }
+      ],
+      "finance": []
+    },
+    {
+      "scenario": "3. Десять единиц / 50 покупателей",
+      "expected": {
+        "success": 10,
+        "shortage": 40,
+        "rounds": 5
+      },
+      "actual": [
+        {
+          "round": 1,
+          "success": 10,
+          "shortage": 40
+        },
+        {
+          "round": 2,
+          "success": 10,
+          "shortage": 40
+        },
+        {
+          "round": 3,
+          "success": 10,
+          "shortage": 40
+        },
+        {
+          "round": 4,
+          "success": 10,
+          "shortage": 40
+        },
+        {
+          "round": 5,
+          "success": 10,
+          "shortage": 40
+        }
+      ],
+      "stock": [
+        {
+          "product_id": 1,
+          "on_hand": 10,
+          "reserved": 10
+        },
+        {
+          "product_id": 2,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 3,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 4,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 5,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 6,
+          "on_hand": 0,
+          "reserved": 0
+        }
+      ],
+      "orders": [
+        {
+          "id": 1,
+          "user_id": 8,
+          "pay_status": "awaiting_payment",
+          "sale_accepted": 0,
+          "total": 1200
+        },
+        {
+          "id": 2,
+          "user_id": 42,
+          "pay_status": "awaiting_payment",
+          "sale_accepted": 0,
+          "total": 1200
+        },
+        {
+          "id": 3,
+          "user_id": 26,
+          "pay_status": "awaiting_payment",
+          "sale_accepted": 0,
+          "total": 1200
+        },
+        {
+          "id": 4,
+          "user_id": 32,
+          "pay_status": "awaiting_payment",
+          "sale_accepted": 0,
+          "total": 1200
+        },
+        {
+          "id": 5,
+          "user_id": 6,
+          "pay_status": "awaiting_payment",
+          "sale_accepted": 0,
+          "total": 1200
+        },
+        {
+          "id": 6,
+          "user_id": 10,
+          "pay_status": "awaiting_payment",
+          "sale_accepted": 0,
+          "total": 1200
+        },
+        {
+          "id": 7,
+          "user_id": 4,
+          "pay_status": "awaiting_payment",
+          "sale_accepted": 0,
+          "total": 1200
+        },
+        {
+          "id": 8,
+          "user_id": 20,
+          "pay_status": "awaiting_payment",
+          "sale_accepted": 0,
+          "total": 1200
+        },
+        {
+          "id": 9,
+          "user_id": 41,
+          "pay_status": "awaiting_payment",
+          "sale_accepted": 0,
+          "total": 1200
+        },
+        {
+          "id": 10,
+          "user_id": 43,
+          "pay_status": "awaiting_payment",
+          "sale_accepted": 0,
+          "total": 1200
+        }
+      ],
+      "journal": [
+        {
+          "id": 1,
+          "product_id": 1,
+          "kind": "receipt",
+          "delta_hand": 10,
+          "delta_reserved": 0,
+          "order_id": null,
+          "occurred_at": 2000000000.0,
+          "author": "111",
+          "operation_key": "receive:111:initial-product-1"
+        },
+        {
+          "id": 2,
+          "product_id": 1,
+          "kind": "reserve",
+          "delta_hand": 0,
+          "delta_reserved": 1,
+          "order_id": 1,
+          "occurred_at": 2000000000.0,
+          "author": "8",
+          "operation_key": "reserve:1:1"
+        },
+        {
+          "id": 3,
+          "product_id": 1,
+          "kind": "reserve",
+          "delta_hand": 0,
+          "delta_reserved": 1,
+          "order_id": 2,
+          "occurred_at": 2000000000.0,
+          "author": "42",
+          "operation_key": "reserve:2:1"
+        },
+        {
+          "id": 4,
+          "product_id": 1,
+          "kind": "reserve",
+          "delta_hand": 0,
+          "delta_reserved": 1,
+          "order_id": 3,
+          "occurred_at": 2000000000.0,
+          "author": "26",
+          "operation_key": "reserve:3:1"
+        },
+        {
+          "id": 5,
+          "product_id": 1,
+          "kind": "reserve",
+          "delta_hand": 0,
+          "delta_reserved": 1,
+          "order_id": 4,
+          "occurred_at": 2000000000.0,
+          "author": "32",
+          "operation_key": "reserve:4:1"
+        },
+        {
+          "id": 6,
+          "product_id": 1,
+          "kind": "reserve",
+          "delta_hand": 0,
+          "delta_reserved": 1,
+          "order_id": 5,
+          "occurred_at": 2000000000.0,
+          "author": "6",
+          "operation_key": "reserve:5:1"
+        },
+        {
+          "id": 7,
+          "product_id": 1,
+          "kind": "reserve",
+          "delta_hand": 0,
+          "delta_reserved": 1,
+          "order_id": 6,
+          "occurred_at": 2000000000.0,
+          "author": "10",
+          "operation_key": "reserve:6:1"
+        },
+        {
+          "id": 8,
+          "product_id": 1,
+          "kind": "reserve",
+          "delta_hand": 0,
+          "delta_reserved": 1,
+          "order_id": 7,
+          "occurred_at": 2000000000.0,
+          "author": "4",
+          "operation_key": "reserve:7:1"
+        },
+        {
+          "id": 9,
+          "product_id": 1,
+          "kind": "reserve",
+          "delta_hand": 0,
+          "delta_reserved": 1,
+          "order_id": 8,
+          "occurred_at": 2000000000.0,
+          "author": "20",
+          "operation_key": "reserve:8:1"
+        },
+        {
+          "id": 10,
+          "product_id": 1,
+          "kind": "reserve",
+          "delta_hand": 0,
+          "delta_reserved": 1,
+          "order_id": 9,
+          "occurred_at": 2000000000.0,
+          "author": "41",
+          "operation_key": "reserve:9:1"
+        },
+        {
+          "id": 11,
+          "product_id": 1,
+          "kind": "reserve",
+          "delta_hand": 0,
+          "delta_reserved": 1,
+          "order_id": 10,
+          "occurred_at": 2000000000.0,
+          "author": "43",
+          "operation_key": "reserve:10:1"
+        }
+      ],
+      "finance": []
+    },
+    {
+      "scenario": "Параметризуемая конкуренция",
+      "expected": {
+        "success": 1,
+        "shortage": 19,
+        "rounds": 5
+      },
+      "actual": [
+        {
+          "round": 1,
+          "success": 1,
+          "shortage": 19
+        },
+        {
+          "round": 2,
+          "success": 1,
+          "shortage": 19
+        },
+        {
+          "round": 3,
+          "success": 1,
+          "shortage": 19
+        },
+        {
+          "round": 4,
+          "success": 1,
+          "shortage": 19
+        },
+        {
+          "round": 5,
+          "success": 1,
+          "shortage": 19
+        }
+      ],
+      "stock": [
+        {
+          "product_id": 1,
+          "on_hand": 1,
+          "reserved": 1
+        },
+        {
+          "product_id": 2,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 3,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 4,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 5,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 6,
+          "on_hand": 0,
+          "reserved": 0
+        }
+      ],
+      "orders": [
+        {
+          "id": 1,
+          "user_id": 9,
+          "pay_status": "awaiting_payment",
+          "sale_accepted": 0,
+          "total": 1200
+        }
+      ],
+      "journal": [
+        {
+          "id": 1,
+          "product_id": 1,
+          "kind": "receipt",
+          "delta_hand": 1,
+          "delta_reserved": 0,
+          "order_id": null,
+          "occurred_at": 2000000000.0,
+          "author": "111",
+          "operation_key": "receive:111:initial-product-1"
+        },
+        {
+          "id": 2,
+          "product_id": 1,
+          "kind": "reserve",
+          "delta_hand": 0,
+          "delta_reserved": 1,
+          "order_id": 1,
+          "occurred_at": 2000000000.0,
+          "author": "9",
+          "operation_key": "reserve:1:1"
+        }
+      ],
+      "finance": []
+    },
+    {
+      "scenario": "4. Откат всего заказа",
+      "expected": "409, A=3/0/3, заказов 0",
+      "actual": {
+        "error": "Сейчас нет в наличии нужного количества. Обновите корзину."
+      },
+      "stock": [
+        {
+          "product_id": 1,
+          "on_hand": 3,
+          "reserved": 0
+        },
+        {
+          "product_id": 2,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 3,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 4,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 5,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 6,
+          "on_hand": 0,
+          "reserved": 0
+        }
+      ],
+      "orders": [],
+      "journal": [
+        {
+          "id": 1,
+          "product_id": 1,
+          "kind": "receipt",
+          "delta_hand": 3,
+          "delta_reserved": 0,
+          "order_id": null,
+          "occurred_at": 2000000000.0,
+          "author": "111",
+          "operation_key": "receive:111:initial-product-1"
+        }
+      ],
+      "finance": []
+    },
+    {
+      "scenario": "5. Повторы и другой состав",
+      "expected": "1 заказ; конфликт 409; смена цены не меняет повтор",
+      "actual": [
+        [
+          200,
+          {
+            "id": 1,
+            "duplicate": true
+          }
+        ],
+        [
+          200,
+          {
+            "id": 1,
+            "duplicate": true
+          }
+        ],
+        [
+          200,
+          {
+            "id": 1,
+            "duplicate": true
+          }
+        ],
+        [
+          200,
+          {
+            "id": 1,
+            "duplicate": true
+          }
+        ],
+        [
+          200,
+          {
+            "id": 1,
+            "duplicate": true
+          }
+        ],
+        [
+          200,
+          {
+            "id": 1,
+            "duplicate": true
+          }
+        ],
+        [
+          200,
+          {
+            "id": 1,
+            "duplicate": true
+          }
+        ],
+        [
+          200,
+          {
+            "id": 1,
+            "duplicate": false
+          }
+        ],
+        [
+          200,
+          {
+            "id": 1,
+            "duplicate": true
+          }
+        ],
+        [
+          200,
+          {
+            "id": 1,
+            "duplicate": true
+          }
+        ],
+        [
+          200,
+          {
+            "id": 1,
+            "duplicate": true
+          }
+        ],
+        [
+          200,
+          {
+            "id": 1,
+            "duplicate": true
+          }
+        ],
+        [
+          200,
+          {
+            "id": 1,
+            "duplicate": true
+          }
+        ],
+        [
+          200,
+          {
+            "id": 1,
+            "duplicate": true
+          }
+        ],
+        [
+          200,
+          {
+            "id": 1,
+            "duplicate": true
+          }
+        ],
+        [
+          200,
+          {
+            "id": 1,
+            "duplicate": true
+          }
+        ],
+        [
+          200,
+          {
+            "id": 1,
+            "duplicate": true
+          }
+        ],
+        [
+          200,
+          {
+            "id": 1,
+            "duplicate": true
+          }
+        ],
+        [
+          200,
+          {
+            "id": 1,
+            "duplicate": true
+          }
+        ],
+        [
+          200,
+          {
+            "id": 1,
+            "duplicate": true
+          }
+        ]
+      ],
+      "stock": [
+        {
+          "product_id": 1,
+          "on_hand": 5,
+          "reserved": 1
+        },
+        {
+          "product_id": 2,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 3,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 4,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 5,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 6,
+          "on_hand": 0,
+          "reserved": 0
+        }
+      ],
+      "orders": [
+        {
+          "id": 1,
+          "user_id": 1,
+          "pay_status": "awaiting_payment",
+          "sale_accepted": 0,
+          "total": 1200
+        }
+      ],
+      "journal": [
+        {
+          "id": 1,
+          "product_id": 1,
+          "kind": "receipt",
+          "delta_hand": 5,
+          "delta_reserved": 0,
+          "order_id": null,
+          "occurred_at": 2000000000.0,
+          "author": "111",
+          "operation_key": "receive:111:initial-product-1"
+        },
+        {
+          "id": 2,
+          "product_id": 1,
+          "kind": "reserve",
+          "delta_hand": 0,
+          "delta_reserved": 1,
+          "order_id": 1,
+          "occurred_at": 2000000000.0,
+          "author": "1",
+          "operation_key": "reserve:1:1"
+        }
+      ],
+      "finance": []
+    },
+    {
+      "scenario": "6. Пять оплат и поздний canceled",
+      "expected": "1 продажа, 120000 коп.",
+      "actual": {
+        "from": "2000-01-01",
+        "to": "2099-12-31",
+        "receipts": 120000,
+        "receipts_count": 1,
+        "refunds": 0,
+        "refunds_count": 0,
+        "expenses": 0,
+        "expenses_count": 0,
+        "cogs_paid": 70000,
+        "cogs_refunded": 0,
+        "cash_flow": 120000,
+        "result": 50000,
+        "restored_cost_orders": 0
+      },
+      "stock": [
+        {
+          "product_id": 1,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 2,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 3,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 4,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 5,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 6,
+          "on_hand": 0,
+          "reserved": 0
+        }
+      ],
+      "orders": [
+        {
+          "id": 1,
+          "user_id": 1,
+          "pay_status": "paid",
+          "sale_accepted": 1,
+          "total": 1200
+        }
+      ],
+      "journal": [
+        {
+          "id": 1,
+          "product_id": 1,
+          "kind": "receipt",
+          "delta_hand": 1,
+          "delta_reserved": 0,
+          "order_id": null,
+          "occurred_at": 2000000000.0,
+          "author": "111",
+          "operation_key": "receive:111:initial-product-1"
+        },
+        {
+          "id": 2,
+          "product_id": 1,
+          "kind": "reserve",
+          "delta_hand": 0,
+          "delta_reserved": 1,
+          "order_id": 1,
+          "occurred_at": 2000000000.0,
+          "author": "1",
+          "operation_key": "reserve:1:1"
+        },
+        {
+          "id": 3,
+          "product_id": 1,
+          "kind": "sale",
+          "delta_hand": -1,
+          "delta_reserved": -1,
+          "order_id": 1,
+          "occurred_at": 2000000000.0,
+          "author": "payment",
+          "operation_key": "sale:1:1"
+        }
+      ],
+      "finance": [
+        {
+          "type": "receipt",
+          "amount_kop": 120000,
+          "order_id": 1,
+          "payment_id": 1
+        }
+      ]
+    },
+    {
+      "scenario": "7. Повтор отмены и истечение",
+      "expected": "2 освобождения, поступлений денег нет",
+      "actual": [
+        2,
+        0,
+        2
+      ],
+      "stock": [
+        {
+          "product_id": 1,
+          "on_hand": 2,
+          "reserved": 0
+        },
+        {
+          "product_id": 2,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 3,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 4,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 5,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 6,
+          "on_hand": 0,
+          "reserved": 0
+        }
+      ],
+      "orders": [
+        {
+          "id": 1,
+          "user_id": 1,
+          "pay_status": "canceled",
+          "sale_accepted": 0,
+          "total": 1200
+        },
+        {
+          "id": 2,
+          "user_id": 2,
+          "pay_status": "expired",
+          "sale_accepted": 0,
+          "total": 1200
+        }
+      ],
+      "journal": [
+        {
+          "id": 1,
+          "product_id": 1,
+          "kind": "receipt",
+          "delta_hand": 2,
+          "delta_reserved": 0,
+          "order_id": null,
+          "occurred_at": 2000000000.0,
+          "author": "111",
+          "operation_key": "receive:111:initial-product-1"
+        },
+        {
+          "id": 2,
+          "product_id": 1,
+          "kind": "reserve",
+          "delta_hand": 0,
+          "delta_reserved": 1,
+          "order_id": 1,
+          "occurred_at": 2000000000.0,
+          "author": "1",
+          "operation_key": "reserve:1:1"
+        },
+        {
+          "id": 3,
+          "product_id": 1,
+          "kind": "reserve",
+          "delta_hand": 0,
+          "delta_reserved": 1,
+          "order_id": 2,
+          "occurred_at": 2000000000.0,
+          "author": "2",
+          "operation_key": "reserve:2:1"
+        },
+        {
+          "id": 4,
+          "product_id": 1,
+          "kind": "release",
+          "delta_hand": 0,
+          "delta_reserved": -1,
+          "order_id": 1,
+          "occurred_at": 2000000000.0,
+          "author": "system",
+          "operation_key": "release:1:1"
+        },
+        {
+          "id": 5,
+          "product_id": 1,
+          "kind": "release",
+          "delta_hand": 0,
+          "delta_reserved": -1,
+          "order_id": 2,
+          "occurred_at": 2000000120.0,
+          "author": "system",
+          "operation_key": "release:2:1"
+        }
+      ],
+      "finance": []
+    },
+    {
+      "scenario": "8. Гонки и точная граница",
+      "expected": "До срока продажа, на/после — возврат; один победитель",
+      "actual": [
+        {
+          "now": 2000000119.999,
+          "sale_accepted": 1
+        },
+        {
+          "now": 2000000120,
+          "sale_accepted": 0
+        },
+        {
+          "now": 2000000120.001,
+          "sale_accepted": 0
+        },
+        {
+          "round": 1,
+          "winner": "payment → consumed",
+          "server_time": 2000000000,
+          "expires_at": 2000000120
+        },
+        {
+          "round": 2,
+          "winner": "cancel → released → payment_conflict → refund",
+          "server_time": 2000000000,
+          "expires_at": 2000000120
+        },
+        {
+          "round": 3,
+          "winner": "cancel → released → payment_conflict → refund",
+          "server_time": 2000000000,
+          "expires_at": 2000000120
+        },
+        {
+          "round": 4,
+          "winner": "cancel → released → payment_conflict → refund",
+          "server_time": 2000000000,
+          "expires_at": 2000000120
+        },
+        {
+          "round": 5,
+          "winner": "cancel → released → payment_conflict → refund",
+          "server_time": 2000000000,
+          "expires_at": 2000000120
+        }
+      ],
+      "stock": [
+        {
+          "product_id": 1,
+          "on_hand": 1,
+          "reserved": 0
+        },
+        {
+          "product_id": 2,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 3,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 4,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 5,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 6,
+          "on_hand": 0,
+          "reserved": 0
+        }
+      ],
+      "orders": [
+        {
+          "id": 1,
+          "user_id": 1,
+          "pay_status": "payment_conflict",
+          "sale_accepted": 0,
+          "total": 1200
+        }
+      ],
+      "journal": [
+        {
+          "id": 1,
+          "product_id": 1,
+          "kind": "receipt",
+          "delta_hand": 1,
+          "delta_reserved": 0,
+          "order_id": null,
+          "occurred_at": 2000000000.0,
+          "author": "111",
+          "operation_key": "receive:111:initial-product-1"
+        },
+        {
+          "id": 2,
+          "product_id": 1,
+          "kind": "reserve",
+          "delta_hand": 0,
+          "delta_reserved": 1,
+          "order_id": 1,
+          "occurred_at": 2000000000.0,
+          "author": "1",
+          "operation_key": "reserve:1:1"
+        },
+        {
+          "id": 3,
+          "product_id": 1,
+          "kind": "release",
+          "delta_hand": 0,
+          "delta_reserved": -1,
+          "order_id": 1,
+          "occurred_at": 2000000000.0,
+          "author": "system",
+          "operation_key": "release:1:1"
+        }
+      ],
+      "finance": [
+        {
+          "type": "receipt",
+          "amount_kop": 120000,
+          "order_id": 1,
+          "payment_id": 1
+        },
+        {
+          "type": "refund",
+          "amount_kop": 120000,
+          "order_id": 1,
+          "payment_id": 1
+        }
+      ]
+    },
+    {
+      "scenario": "9. Поздняя оплата A после продажи Б",
+      "expected": "Поток 1200 ₽, себестоимость 700 ₽, результат 500 ₽",
+      "actual": {
+        "from": "2000-01-01",
+        "to": "2099-12-31",
+        "receipts": 240000,
+        "receipts_count": 2,
+        "refunds": 120000,
+        "refunds_count": 1,
+        "expenses": 0,
+        "expenses_count": 0,
+        "cogs_paid": 70000,
+        "cogs_refunded": 0,
+        "cash_flow": 120000,
+        "result": 50000,
+        "restored_cost_orders": 0
+      },
+      "stock": [
+        {
+          "product_id": 1,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 2,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 3,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 4,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 5,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 6,
+          "on_hand": 0,
+          "reserved": 0
+        }
+      ],
+      "orders": [
+        {
+          "id": 1,
+          "user_id": 1,
+          "pay_status": "payment_conflict",
+          "sale_accepted": 0,
+          "total": 1200
+        },
+        {
+          "id": 2,
+          "user_id": 2,
+          "pay_status": "paid",
+          "sale_accepted": 1,
+          "total": 1200
+        }
+      ],
+      "journal": [
+        {
+          "id": 1,
+          "product_id": 1,
+          "kind": "receipt",
+          "delta_hand": 1,
+          "delta_reserved": 0,
+          "order_id": null,
+          "occurred_at": 2000000000.0,
+          "author": "111",
+          "operation_key": "receive:111:initial-product-1"
+        },
+        {
+          "id": 2,
+          "product_id": 1,
+          "kind": "reserve",
+          "delta_hand": 0,
+          "delta_reserved": 1,
+          "order_id": 1,
+          "occurred_at": 2000000000.0,
+          "author": "1",
+          "operation_key": "reserve:1:1"
+        },
+        {
+          "id": 3,
+          "product_id": 1,
+          "kind": "release",
+          "delta_hand": 0,
+          "delta_reserved": -1,
+          "order_id": 1,
+          "occurred_at": 2000000000.0,
+          "author": "system",
+          "operation_key": "release:1:1"
+        },
+        {
+          "id": 4,
+          "product_id": 1,
+          "kind": "reserve",
+          "delta_hand": 0,
+          "delta_reserved": 1,
+          "order_id": 2,
+          "occurred_at": 2000000000.0,
+          "author": "2",
+          "operation_key": "reserve:2:1"
+        },
+        {
+          "id": 5,
+          "product_id": 1,
+          "kind": "sale",
+          "delta_hand": -1,
+          "delta_reserved": -1,
+          "order_id": 2,
+          "occurred_at": 2000000000.0,
+          "author": "payment",
+          "operation_key": "sale:2:1"
+        }
+      ],
+      "finance": [
+        {
+          "type": "receipt",
+          "amount_kop": 120000,
+          "order_id": 2,
+          "payment_id": 2
+        },
+        {
+          "type": "receipt",
+          "amount_kop": 120000,
+          "order_id": 1,
+          "payment_id": 1
+        },
+        {
+          "type": "refund",
+          "amount_kop": 120000,
+          "order_id": 1,
+          "payment_id": 1
+        }
+      ]
+    },
+    {
+      "scenario": "10. Перезапуск с просроченным резервом",
+      "expected": "1 освобождение до двух интервалов",
+      "actual": [
+        1,
+        0,
+        1
+      ],
+      "stock": [
+        {
+          "product_id": 1,
+          "on_hand": 1,
+          "reserved": 0
+        },
+        {
+          "product_id": 2,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 3,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 4,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 5,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 6,
+          "on_hand": 0,
+          "reserved": 0
+        }
+      ],
+      "orders": [
+        {
+          "id": 1,
+          "user_id": 1,
+          "pay_status": "expired",
+          "sale_accepted": 0,
+          "total": 1200
+        }
+      ],
+      "journal": [
+        {
+          "id": 1,
+          "product_id": 1,
+          "kind": "receipt",
+          "delta_hand": 1,
+          "delta_reserved": 0,
+          "order_id": null,
+          "occurred_at": 2000000000.0,
+          "author": "111",
+          "operation_key": "receive:111:initial-product-1"
+        },
+        {
+          "id": 2,
+          "product_id": 1,
+          "kind": "reserve",
+          "delta_hand": 0,
+          "delta_reserved": 1,
+          "order_id": 1,
+          "occurred_at": 2000000000.0,
+          "author": "1",
+          "operation_key": "reserve:1:1"
+        },
+        {
+          "id": 3,
+          "product_id": 1,
+          "kind": "release",
+          "delta_hand": 0,
+          "delta_reserved": -1,
+          "order_id": 1,
+          "occurred_at": 2000000120.0,
+          "author": "system",
+          "operation_key": "release:1:1"
+        }
+      ],
+      "finance": []
+    },
+    {
+      "scenario": "12. Остановка до commit",
+      "expected": "Откат и успешный повтор, 1 заказ",
+      "actual": [
+        1,
+        1,
+        0
+      ],
+      "stock": [
+        {
+          "product_id": 1,
+          "on_hand": 1,
+          "reserved": 1
+        },
+        {
+          "product_id": 2,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 3,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 4,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 5,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 6,
+          "on_hand": 0,
+          "reserved": 0
+        }
+      ],
+      "orders": [
+        {
+          "id": 1,
+          "user_id": 1,
+          "pay_status": "awaiting_payment",
+          "sale_accepted": 0,
+          "total": 1200
+        }
+      ],
+      "journal": [
+        {
+          "id": 1,
+          "product_id": 1,
+          "kind": "receipt",
+          "delta_hand": 1,
+          "delta_reserved": 0,
+          "order_id": null,
+          "occurred_at": 2000000000.0,
+          "author": "111",
+          "operation_key": "receive:111:initial-product-1"
+        },
+        {
+          "id": 2,
+          "product_id": 1,
+          "kind": "reserve",
+          "delta_hand": 0,
+          "delta_reserved": 1,
+          "order_id": 1,
+          "occurred_at": 2000000000.0,
+          "author": "1",
+          "operation_key": "reserve:1:1"
+        }
+      ],
+      "finance": []
+    },
+    {
+      "scenario": "13. Покупатель, чужой резерв, цена, срок",
+      "expected": "403 / 404 / 400 / 401, данные неизменны",
+      "actual": "Соответствует",
+      "stock": [
+        {
+          "product_id": 1,
+          "on_hand": 1,
+          "reserved": 1
+        },
+        {
+          "product_id": 2,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 3,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 4,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 5,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 6,
+          "on_hand": 0,
+          "reserved": 0
+        }
+      ],
+      "orders": [
+        {
+          "id": 1,
+          "user_id": 1,
+          "pay_status": "awaiting_payment",
+          "sale_accepted": 0,
+          "total": 1200
+        }
+      ],
+      "journal": [
+        {
+          "id": 1,
+          "product_id": 1,
+          "kind": "receipt",
+          "delta_hand": 1,
+          "delta_reserved": 0,
+          "order_id": null,
+          "occurred_at": 2000000000.0,
+          "author": "111",
+          "operation_key": "receive:111:initial-product-1"
+        },
+        {
+          "id": 2,
+          "product_id": 1,
+          "kind": "reserve",
+          "delta_hand": 0,
+          "delta_reserved": 1,
+          "order_id": 1,
+          "occurred_at": 2000000000.0,
+          "author": "1",
+          "operation_key": "reserve:1:1"
+        }
+      ],
+      "finance": []
+    },
+    {
+      "scenario": "Дополнительно: рецепты и снимки",
+      "expected": "2470 ₽ / себестоимость 1428 ₽ / общий резерв 2",
+      "actual": [
+        {
+          "id": 1,
+          "order_id": 1,
+          "product_name": "Шаурма классическая (+ Двойной сыр; + Халапеньо; без лука)",
+          "price": 1270,
+          "qty": 1,
+          "cost_kop": 72800,
+          "cost_source": "order",
+          "product_id": 1,
+          "options_json": "{\"add\": [\"cheese\", \"jalapeno\"], \"remove\": [\"Лук\"]}"
+        },
+        {
+          "id": 2,
+          "order_id": 1,
+          "product_name": "Шаурма классическая",
+          "price": 1200,
+          "qty": 1,
+          "cost_kop": 70000,
+          "cost_source": "order",
+          "product_id": 1,
+          "options_json": "{\"add\": [], \"remove\": []}"
+        }
+      ],
+      "stock": [
+        {
+          "product_id": 1,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 2,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 3,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 4,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 5,
+          "on_hand": 0,
+          "reserved": 0
+        },
+        {
+          "product_id": 6,
+          "on_hand": 0,
+          "reserved": 0
+        }
+      ],
+      "orders": [
+        {
+          "id": 1,
+          "user_id": 1,
+          "pay_status": "paid",
+          "sale_accepted": 1,
+          "total": 2470
+        }
+      ],
+      "journal": [
+        {
+          "id": 1,
+          "product_id": 1,
+          "kind": "receipt",
+          "delta_hand": 2,
+          "delta_reserved": 0,
+          "order_id": null,
+          "occurred_at": 2000000000.0,
+          "author": "111",
+          "operation_key": "receive:111:initial-product-1"
+        },
+        {
+          "id": 2,
+          "product_id": 1,
+          "kind": "reserve",
+          "delta_hand": 0,
+          "delta_reserved": 2,
+          "order_id": 1,
+          "occurred_at": 2000000000.0,
+          "author": "1",
+          "operation_key": "reserve:1:1"
+        },
+        {
+          "id": 3,
+          "product_id": 1,
+          "kind": "sale",
+          "delta_hand": -2,
+          "delta_reserved": -2,
+          "order_id": 1,
+          "occurred_at": 2000000000.0,
+          "author": "payment",
+          "operation_key": "sale:1:1"
+        }
+      ],
+      "finance": [
+        {
+          "type": "receipt",
+          "amount_kop": 247000,
+          "order_id": 1,
+          "payment_id": 1
+        }
+      ]
+    }
+  ]
+}

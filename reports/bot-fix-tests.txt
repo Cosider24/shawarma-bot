@@ -1,0 +1,48 @@
+test_changed_cart_and_shortage_leave_cart_and_orders_consistent (tests.test_bot_chat.BotChat.test_changed_cart_and_shortage_leave_cart_and_orders_consistent) ... Executing <Task finished name='Task-2' coro=<BotChat.test_changed_cart_and_shortage_leave_cart_and_orders_consistent() done, defined at C:\Users\torho\Documents\Codex\2026-10-29\mini-app-x20-2\outputs\shawarma_bot\tests\test_bot_chat.py:72> result=None created at C:\Users\torho\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:100> took 0.234 seconds
+ok
+test_checkout_reserves_variants_and_clears_cart_atomically (tests.test_bot_chat.BotChat.test_checkout_reserves_variants_and_clears_cart_atomically) ... Executing <Task finished name='Task-7' coro=<BotChat.test_checkout_reserves_variants_and_clears_cart_atomically() done, defined at C:\Users\torho\Documents\Codex\2026-10-29\mini-app-x20-2\outputs\shawarma_bot\tests\test_bot_chat.py:61> result=None created at C:\Users\torho\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:100> took 0.110 seconds
+ok
+test_deleted_panel_recovers_once (tests.test_bot_chat.BotChat.test_deleted_panel_recovers_once) ... ok
+test_every_recipe_button_is_short_and_all_selected_fits_caption (tests.test_bot_chat.BotChat.test_every_recipe_button_is_short_and_all_selected_fits_caption) ... Executing <Task finished name='Task-17' coro=<BotChat.test_every_recipe_button_is_short_and_all_selected_fits_caption() done, defined at C:\Users\torho\Documents\Codex\2026-10-29\mini-app-x20-2\outputs\shawarma_bot\tests\test_bot_chat.py:89> result=None created at C:\Users\torho\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:100> took 0.157 seconds
+ok
+test_legacy_cart_migrates_once (tests.test_bot_chat.BotChat.test_legacy_cart_migrates_once) ... ok
+test_old_text_message_is_converted_without_new_message (tests.test_bot_chat.BotChat.test_old_text_message_is_converted_without_new_message) ... ok
+test_twenty_navigation_actions_keep_one_message (tests.test_bot_chat.BotChat.test_twenty_navigation_actions_keep_one_message) ... Executing <Task finished name='Task-32' coro=<BotChat.test_twenty_navigation_actions_keep_one_message() done, defined at C:\Users\torho\Documents\Codex\2026-10-29\mini-app-x20-2\outputs\shawarma_bot\tests\test_bot_chat.py:27> result=None created at C:\Users\torho\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:100> took 0.203 seconds
+ok
+test_unchanged_and_real_errors_never_send_fallback_spam (tests.test_bot_chat.BotChat.test_unchanged_and_real_errors_never_send_fallback_spam) ... ok
+test_variants_recipe_price_persistence_and_double_add (tests.test_bot_chat.BotChat.test_variants_recipe_price_persistence_and_double_add) ... ok
+test_access_rules (tests.test_scenarios.TestApi.test_access_rules) ... C:\Users\torho\Documents\Codex\2026-10-29\mini-app-x20-2\outputs\shawarma_bot\server.py:275: NotAppKeyWarning: It is recommended to use web.AppKey instances for keys.
+https://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config
+  app["bot"] = bot
+C:\Users\torho\Documents\Codex\2026-10-29\mini-app-x20-2\outputs\shawarma_bot\server.py:79: NotAppKeyWarning: It is recommended to use web.RequestKey instances for keys.
+https://docs.aiohttp.org/en/stable/web_advanced.html#request-s-storage
+  request["user"] = user
+ok
+test_expense_and_refund_via_api (tests.test_scenarios.TestApi.test_expense_and_refund_via_api) ... ok
+test_old_database_is_upgraded (tests.test_scenarios.TestMigration.test_old_database_is_upgraded)
+������ �� (��� ��������) �������� ����� �������; ������������� ������ ������� �����������������. ... ok
+test_amount_and_currency_mismatch_rejected (tests.test_scenarios.TestPayments.test_amount_and_currency_mismatch_rejected) ... ok
+test_canceled_payment_then_trusted_success (tests.test_scenarios.TestPayments.test_canceled_payment_then_trusted_success) ... ok
+test_cost_snapshot_survives_catalog_change (tests.test_scenarios.TestPayments.test_cost_snapshot_survives_catalog_change) ... ok
+test_only_owner_can_pay_and_invoice_retry_is_same (tests.test_scenarios.TestPayments.test_only_owner_can_pay_and_invoice_retry_is_same) ... ok
+test_pending_not_in_summary (tests.test_scenarios.TestPayments.test_pending_not_in_summary) ... ok
+test_success_once_and_duplicate (tests.test_scenarios.TestPayments.test_success_once_and_duplicate) ... ok
+test_expense_double_submit_void_and_edit_keep_history (tests.test_scenarios.TestRefundAndExpenses.test_expense_double_submit_void_and_edit_keep_history) ... ok
+test_expense_validation (tests.test_scenarios.TestRefundAndExpenses.test_expense_validation) ... ok
+test_full_cycle_matches_manual_calculation (tests.test_scenarios.TestRefundAndExpenses.test_full_cycle_matches_manual_calculation) ... ok
+test_old_period_refund_makes_result_negative (tests.test_scenarios.TestRefundAndExpenses.test_old_period_refund_makes_result_negative) ... ok
+test_refund_requires_payment (tests.test_scenarios.TestRefundAndExpenses.test_refund_requires_payment) ... ok
+test_unique_receipt_per_order_enforced_by_db (tests.test_scenarios.TestRefundAndExpenses.test_unique_receipt_per_order_enforced_by_db) ... ok
+test_expired_idempotence_window_does_not_post_again (tests.test_provider.ProviderContract.test_expired_idempotence_window_does_not_post_again) ... WARNING:root:������� 1: �Kassa: ���� ����������� ������� ����; ������� ������� � �������� ���������� � ������������ refund_id. ����� �������� �� ������������.
+ok
+test_known_id_is_verified_with_get_after_window (tests.test_provider.ProviderContract.test_known_id_is_verified_with_get_after_window) ... ok
+test_verified_response_completes_once (tests.test_provider.ProviderContract.test_verified_response_completes_once) ... ok
+test_wrong_payment_currency_amount_cannot_restore_stock (tests.test_provider.ProviderContract.test_wrong_payment_currency_amount_cannot_restore_stock) ... WARNING:root:������� 1: ����� �������� �� ������������� ��������� �������, ����� ��� ������
+WARNING:root:������� 1: ����� �������� �� ������������� ��������� �������, ����� ��� ������
+WARNING:root:������� 1: ����� �������� �� ������������� ��������� �������, ����� ��� ������
+ok
+
+----------------------------------------------------------------------
+Ran 28 tests in 13.471s
+
+OK

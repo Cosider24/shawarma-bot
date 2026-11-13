@@ -1,0 +1,6 @@
+test_01_manual_chain (tests.test_acceptance.Acceptance.test_01_manual_chain) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 15.205s
+
+OK

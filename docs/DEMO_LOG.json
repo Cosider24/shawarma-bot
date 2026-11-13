@@ -1,0 +1,198 @@
+{
+  "stock": [
+    {
+      "product_id": 7,
+      "on_hand": 1,
+      "reserved": 0
+    }
+  ],
+  "orders": [
+    {
+      "id": 1,
+      "user_id": 1001,
+      "customer_name": "Покупатель А",
+      "total": 1200,
+      "pay_status": "payment_conflict",
+      "sale_accepted": 0
+    },
+    {
+      "id": 2,
+      "user_id": 1002,
+      "customer_name": "Покупатель Б",
+      "total": 1200,
+      "pay_status": "paid",
+      "sale_accepted": 1
+    },
+    {
+      "id": 3,
+      "user_id": 1001,
+      "customer_name": "Покупатель А",
+      "total": 1200,
+      "pay_status": "expired",
+      "sale_accepted": 0
+    }
+  ],
+  "reservations": [
+    {
+      "id": 1,
+      "order_id": 1,
+      "state": "released",
+      "expires_at": 1793297630.014053,
+      "release_reason": "canceled"
+    },
+    {
+      "id": 2,
+      "order_id": 2,
+      "state": "consumed",
+      "expires_at": 1793297630.014053,
+      "release_reason": null
+    },
+    {
+      "id": 3,
+      "order_id": 3,
+      "state": "released",
+      "expires_at": 1793297630.014053,
+      "release_reason": "expired"
+    }
+  ],
+  "payments": [
+    {
+      "id": 1,
+      "order_id": 1,
+      "provider": "simulator",
+      "amount_kop": 120000,
+      "currency": "RUB",
+      "status": "refunded"
+    },
+    {
+      "id": 2,
+      "order_id": 2,
+      "provider": "simulator",
+      "amount_kop": 120000,
+      "currency": "RUB",
+      "status": "succeeded"
+    }
+  ],
+  "stock_journal": [
+    {
+      "id": 1,
+      "product_id": 7,
+      "kind": "receipt",
+      "delta_hand": 1,
+      "delta_reserved": 0,
+      "order_id": null,
+      "occurred_at": 1793297510.014053,
+      "author": "111",
+      "operation_key": "receive:111:walkthrough-initial-stock"
+    },
+    {
+      "id": 2,
+      "product_id": 7,
+      "kind": "reserve",
+      "delta_hand": 0,
+      "delta_reserved": 1,
+      "order_id": 1,
+      "occurred_at": 1793297510.014053,
+      "author": "1001",
+      "operation_key": "reserve:1:7"
+    },
+    {
+      "id": 3,
+      "product_id": 7,
+      "kind": "release",
+      "delta_hand": 0,
+      "delta_reserved": -1,
+      "order_id": 1,
+      "occurred_at": 1793297510.014053,
+      "author": "system",
+      "operation_key": "release:1:7"
+    },
+    {
+      "id": 4,
+      "product_id": 7,
+      "kind": "reserve",
+      "delta_hand": 0,
+      "delta_reserved": 1,
+      "order_id": 2,
+      "occurred_at": 1793297510.014053,
+      "author": "1002",
+      "operation_key": "reserve:2:7"
+    },
+    {
+      "id": 5,
+      "product_id": 7,
+      "kind": "sale",
+      "delta_hand": -1,
+      "delta_reserved": -1,
+      "order_id": 2,
+      "occurred_at": 1793297510.014053,
+      "author": "payment",
+      "operation_key": "sale:2:7"
+    },
+    {
+      "id": 6,
+      "product_id": 7,
+      "kind": "receipt",
+      "delta_hand": 1,
+      "delta_reserved": 0,
+      "order_id": null,
+      "occurred_at": 1793297510.014053,
+      "author": "111",
+      "operation_key": "receive:111:walkthrough-restart-stock"
+    },
+    {
+      "id": 7,
+      "product_id": 7,
+      "kind": "reserve",
+      "delta_hand": 0,
+      "delta_reserved": 1,
+      "order_id": 3,
+      "occurred_at": 1793297510.014053,
+      "author": "1001",
+      "operation_key": "reserve:3:7"
+    },
+    {
+      "id": 8,
+      "product_id": 7,
+      "kind": "release",
+      "delta_hand": 0,
+      "delta_reserved": -1,
+      "order_id": 3,
+      "occurred_at": 1793297630.014053,
+      "author": "system",
+      "operation_key": "release:3:7"
+    }
+  ],
+  "finance_operations": [
+    {
+      "type": "receipt",
+      "amount_kop": 120000,
+      "order_id": 2,
+      "payment_id": 2
+    },
+    {
+      "type": "receipt",
+      "amount_kop": 120000,
+      "order_id": 1,
+      "payment_id": 1
+    },
+    {
+      "type": "refund",
+      "amount_kop": 120000,
+      "order_id": 1,
+      "payment_id": 1
+    }
+  ],
+  "refund_jobs": [
+    {
+      "payment_id": 1,
+      "state": "refund_succeeded",
+      "operation_key": "refund-3964cea3-d8d2-4e64-b66c-3cbd8bb82d11",
+      "attempts": 1,
+      "next_attempt": 0.0,
+      "last_error": null,
+      "lease_until": 0.0,
+      "first_attempt_at": 1793297510.014053
+    }
+  ]
+}

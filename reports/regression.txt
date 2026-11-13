@@ -1,0 +1,27 @@
+test_access_rules (tests.test_scenarios.TestApi.test_access_rules) ... C:\Users\torho\Documents\Codex\2026-10-29\mini-app-x20-2\outputs\shawarma_bot\server.py:275: NotAppKeyWarning: It is recommended to use web.AppKey instances for keys.
+https://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config
+  app["bot"] = bot
+C:\Users\torho\Documents\Codex\2026-10-29\mini-app-x20-2\outputs\shawarma_bot\server.py:79: NotAppKeyWarning: It is recommended to use web.RequestKey instances for keys.
+https://docs.aiohttp.org/en/stable/web_advanced.html#request-s-storage
+  request["user"] = user
+ok
+test_expense_and_refund_via_api (tests.test_scenarios.TestApi.test_expense_and_refund_via_api) ... ok
+test_old_database_is_upgraded (tests.test_scenarios.TestMigration.test_old_database_is_upgraded)
+������ �� (��� ��������) �������� ����� �������; ������������� ������ ������� �����������������. ... ok
+test_amount_and_currency_mismatch_rejected (tests.test_scenarios.TestPayments.test_amount_and_currency_mismatch_rejected) ... ok
+test_canceled_payment_then_trusted_success (tests.test_scenarios.TestPayments.test_canceled_payment_then_trusted_success) ... ok
+test_cost_snapshot_survives_catalog_change (tests.test_scenarios.TestPayments.test_cost_snapshot_survives_catalog_change) ... ok
+test_only_owner_can_pay_and_invoice_retry_is_same (tests.test_scenarios.TestPayments.test_only_owner_can_pay_and_invoice_retry_is_same) ... ok
+test_pending_not_in_summary (tests.test_scenarios.TestPayments.test_pending_not_in_summary) ... ok
+test_success_once_and_duplicate (tests.test_scenarios.TestPayments.test_success_once_and_duplicate) ... ok
+test_expense_double_submit_void_and_edit_keep_history (tests.test_scenarios.TestRefundAndExpenses.test_expense_double_submit_void_and_edit_keep_history) ... ok
+test_expense_validation (tests.test_scenarios.TestRefundAndExpenses.test_expense_validation) ... ok
+test_full_cycle_matches_manual_calculation (tests.test_scenarios.TestRefundAndExpenses.test_full_cycle_matches_manual_calculation) ... ok
+test_old_period_refund_makes_result_negative (tests.test_scenarios.TestRefundAndExpenses.test_old_period_refund_makes_result_negative) ... ok
+test_refund_requires_payment (tests.test_scenarios.TestRefundAndExpenses.test_refund_requires_payment) ... ok
+test_unique_receipt_per_order_enforced_by_db (tests.test_scenarios.TestRefundAndExpenses.test_unique_receipt_per_order_enforced_by_db) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 6.889s
+
+OK

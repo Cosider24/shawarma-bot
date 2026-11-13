@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Финансовый кабинет</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{--bg:var(--tg-theme-bg-color,#fff);--fg:var(--tg-theme-text-color,#1b1b1b);--hint:var(--tg-theme-hint-color,#6b7280);
+--card:var(--tg-theme-secondary-bg-color,#f3f4f1);--accent:var(--tg-theme-button-color,#1f6f5c);--accent-fg:var(--tg-theme-button-text-color,#fff);
+--bad:#b42318;--good:#1a7f4b;--line:rgba(127,127,127,.25)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:0 0 40px}
+header{padding:12px 14px 0}
+h1{font-size:18px;margin:0 0 8px}
+.demo{background:#fff4d6;color:#6a4a00;border-radius:8px;padding:6px 10px;font-size:13px;margin-bottom:8px}
+nav{display:flex;gap:4px;padding:0 10px;border-bottom:1px solid var(--line);overflow-x:auto}
+nav button{flex:1;background:none;border:0;padding:10px 6px;color:var(--hint);font:inherit;border-bottom:3px solid transparent;white-space:nowrap}
+nav button.on{color:var(--fg);border-color:var(--accent);font-weight:600}
+main{padding:12px 14px}
+.card{background:var(--card);border-radius:12px;padding:12px;margin-bottom:10px}
+.big{font-size:26px;font-weight:700;margin:2px 0}
+.hint{color:var(--hint);font-size:13px}
+.row{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.neg{color:var(--bad)} .pos{color:var(--good)}
+.tag{display:inline-block;border-radius:6px;padding:1px 7px;font-size:12px;background:var(--line)}
+.tag.paid{background:#d6f2e2;color:#115c35}.tag.wait{background:#fff0c2;color:#6a4a00}.tag.ref{background:#e4e4e7;color:#333}
+button.btn{background:var(--accent);color:var(--accent-fg);border:0;border-radius:10px;padding:10px 14px;font:inherit;font-weight:600}
+button.btn.alt{background:transparent;color:var(--fg);border:1px solid var(--line)}
+button.btn.danger{background:var(--bad);color:#fff}
+button:disabled{opacity:.5}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+input,select,textarea{width:100%;font:inherit;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--fg);margin:4px 0 10px}
+label{font-size:13px;color:var(--hint)}
+.err{background:#fde7e4;color:#8a1c12;border-radius:10px;padding:10px;margin-bottom:10px}
+.ok{background:#dcf5e7;color:#14532d;border-radius:10px;padding:10px;margin-bottom:10px}
+.item{cursor:pointer}
+.void{text-decoration:line-through;opacity:.55}
+.period{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.chips{display:flex;gap:6px;margin-bottom:8px}.chips button{flex:1}
+</style>
+</head>
+<body>
+<header><a href="/shop">← Магазин</a><h1>Кабинет менеджера</h1><div id="demo"></div></header>
+<nav id="nav"></nav>
+<main id="main"></main>
+<script>
+const tg = window.Telegram && Telegram.WebApp;
+if (tg) { tg.ready(); tg.expand(); }
+const initData = tg ? tg.initData : "";
+const $ = (id) => document.getElementById(id);
+const state = { tab: "summary", me: null, from: null, to: null, editing: null, rid: null };
+
+// все тексты из базы вставляются через textContent — XSS невозможен
+function h(tag, attrs, ...kids) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (k === "class") e.className = v; else if (k.startsWith("on")) e[k] = v; else if (v !== null && v !== undefined) e.setAttribute(k, v);
+  }
+  for (const c of kids.flat()) if (c !== null && c !== undefined && c !== false) e.append(c.nodeType ? c : document.createTextNode(String(c)));
+  return e;
+}
+const money = (k) => { const s = k < 0 ? "−" : ""; const a = Math.abs(k); const r = Math.floor(a / 100), c = a % 100;
+  return s + String(r).replace(/\B(?=(\d{3})+(?!\d))/g, "\u00a0") + (c ? "," + String(c).padStart(2, "0") : "") + "\u00a0₽"; };
+const signed = (k) => h("span", { class: k < 0 ? "neg" : "pos" }, money(k));
+const when = (s) => s.slice(8, 10) + "." + s.slice(5, 7) + " " + s.slice(11, 16);
+const rid = () => (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random());
+
+async function api(path, method = "GET", body) {
+  if (!initData) throw new Error("Откройте кабинет кнопкой из Telegram-бота: вне Telegram данные недоступны.");
+  let r;
+  try {
+    r = await fetch(path, { method, headers: { Authorization: "tma " + initData, "Content-Type": "application/json" },
+      body: body ? JSON.stringify(body) : undefined });
+  } catch (e) { throw new Error("Нет связи с сервером. Результат неизвестен. Повторите с тем же ключом запроса."); }
+  let j = {}; try { j = await r.json(); } catch (e) {}
+  if (!r.ok) throw new Error(j.error || "Ошибка сервера (" + r.status + ")");
+  return j;
+}
+const msg = (kind, text) => h("div", { class: kind }, text);
+function show(node) { const m = $("main"); m.replaceChildren(node); }
+function fail(e) { show(h("div", {}, msg("err", e.message), h("button", { class: "btn", onclick: render }, "Повторить"))); }
+function iso(d) { return d.toISOString().slice(0, 10); }
+function calcPeriod(kind) {
+  const t = new Date(); const today = iso(new Date(t.getTime() - t.getTimezoneOffset() * 60000));
+  state.to = today;
+  state.from = kind === "day" ? today : kind === "all" ? "2000-01-01" : today.slice(0, 8) + "01";
+}
+function setPeriod(kind) { calcPeriod(kind); render(); }
+
+function periodBar() {
+  const f = h("input", { type: "date", value: state.from }), t = h("input", { type: "date", value: state.to });
+  const apply = () => { if (f.value && t.value) { state.from = f.value; state.to = t.value; render(); } };
+  f.onchange = apply; t.onchange = apply;
+  return h("div", {}, h("div", { class: "chips" },
+    h("button", { class: "btn alt", onclick: () => setPeriod("day") }, "Сегодня"),
+    h("button", { class: "btn alt", onclick: () => setPeriod("month") }, "Месяц"),
+    h("button", { class: "btn alt", onclick: () => setPeriod("all") }, "Всё время")),
+    h("div", { class: "period" }, h("div", {}, h("label", {}, "С"), f), h("div", {}, h("label", {}, "По"), t)));
+}
+
+async function viewSummary() {
+  const s = await api(`/api/summary?from=${state.from}&to=${state.to}`);
+  const line = (a, b, cls) => h("div", { class: "row" }, h("span", {}, a), h("span", { class: cls }, b));
+  show(h("div", {}, periodBar(),
+    h("div", { class: "card" }, h("div", { class: "hint" }, "Денежный поток · " + state.from + " — " + state.to),
+      h("div", { class: "big" }, signed(s.cash_flow)),
+      h("div", { class: "hint" }, "= поступления − возвраты − расходы"),
+      h("div", { class: "hint" }, `${money(s.receipts)} − ${money(s.refunds)} − ${money(s.expenses)}`)),
+    h("div", { class: "card" }, h("div", { class: "hint" }, "Учебный результат · " + state.from + " — " + state.to),
+      h("div", { class: "big" }, signed(s.result)),
+      h("div", { class: "hint" }, "= поступления − возвраты − себестоимость оплаченных + себестоимость возвращённых − расходы"),
+      h("div", { class: "hint" }, `${money(s.receipts)} − ${money(s.refunds)} − ${money(s.cogs_paid)} + ${money(s.cogs_refunded)} − ${money(s.expenses)}`)),
+    h("div", { class: "card" },
+      line(`Поступления (${s.receipts_count})`, money(s.receipts)), line(`Возвраты (${s.refunds_count})`, money(s.refunds)),
+      line(`Расходы (${s.expenses_count})`, money(s.expenses)), line("Себестоимость оплаченных заказов", money(s.cogs_paid)),
+      line("Себестоимость возвращённых заказов", money(s.cogs_refunded))),
+    h("div", { class: "hint" }, "Операции считаются по дате подтверждения, а не по дате заказа. Если возврат относится к заказу из прошлого периода, результат текущего периода может стать отрицательным."),
+    s.restored_cost_orders ? h("div", { class: "hint" }, `У ${s.restored_cost_orders} заказов из периода себестоимость восстановлена по текущему каталогу (заказы созданы до финансового модуля).`) : null));
+}
+
+const payTag = (o) => h("span", { class: "tag " + (o.pay_status === "paid" ? "paid" : o.pay_status === "refunded" ? "ref" : "wait") }, o.pay_label);
+
+async function viewOrders() {
+  const { items } = await api("/api/orders");
+  show(h("div", {}, items.length ? items.map((o) => h("div", { class: "card item", onclick: () => openOrder(o.id) },
+    h("div", { class: "row" }, h("b", {}, "Заказ №" + o.id), payTag(o)),
+    h("div", { class: "row" }, h("span", {}, o.customer_name), h("span", {}, o.total + "\u00a0₽")),
+    h("div", { class: "hint" }, o.created_at + " · " + o.status))) : msg("card", "Заказов пока нет.")));
+}
+
+async function openOrder(id, note) {
+  try {
+    const c = await api("/api/orders/" + id); const o = c.order;
+    const pay = c.payments.find((p) => ["succeeded", "refund_pending", "refunded"].includes(p.status));
+    const act = async (path, body, okText) => {
+      try { await api(path, "POST", body); await openOrder(id, okText); } catch (e) { await openOrder(id, "!" + e.message); }
+    };
+    const btns = [];
+    if (pay && pay.status === "succeeded") btns.push(h("button", { class: "btn danger", onclick: (ev) => {
+      if (confirm("Вернуть заказ №" + id + " полностью?")) { ev.target.disabled = true; act(`/api/orders/${id}/refund`, {}, "Возврат запущен"); } } }, "Полный возврат"));
+    if (pay && pay.status === "refund_pending") {
+      btns.push(h('button',{class:'btn',onclick:(ev)=>{ev.target.disabled=true;act(`/api/orders/${id}/refund/finish`,{},'Проверка отправлена. Обновите карточку для результата.')}},'Проверить возврат'));
+
+    }
+    if(o.pay_status==='awaiting_payment') btns.push(h('button',{class:'btn alt',onclick:()=>act(`/api/orders/${id}/cancel`,{},'Резерв освобождён')},'Отменить неоплаченный заказ'));
+    if(o.pay_status==='paid') for(const status of ['Готовится','Готов к выдаче','Выдан']) btns.push(h('button',{class:'btn alt',onclick:()=>act(`/api/orders/${id}/status`,{status},'Статус обновлён')},status));
+    show(h("div", {}, note ? (note[0] === "!" ? msg("err", note.slice(1)) : msg("ok", note)) : null,
+      h("button", { class: "btn alt", onclick: () => setTab("orders") }, "← К заказам"),
+      h("div", { class: "card", style: "margin-top:10px" },
+        h("div", { class: "row" }, h("b", {}, "Заказ №" + o.id), payTag(o)),
+        h("div", { class: "hint" }, `${o.customer_name} · ${o.delivery} · ${o.created_at} · ${o.status}`),
+        c.items.map((i) => h("div", { class: "row" }, h("span", {}, `${i.product_name} × ${i.qty}`),
+          h("span", {}, `${i.price * i.qty}\u00a0₽ (себест. ${money(i.cost_kop * i.qty)})`))),
+        h("div", { class: "row" }, h("b", {}, "Итого"), h("b", {}, money(c.order.total_kop))),
+        h("div", { class: "hint" }, "Себестоимость заказа: " + money(c.cost_kop) +
+          (c.items.some((i) => i.cost_source === "restored") ? " (восстановлена по каталогу)" : ""))),
+      h("div", { class: "card" }, h("b", {}, "Платежи"),
+        c.payments.length ? c.payments.map((p) => h("div", { class: "row" },
+          h("span", {}, `№${p.id} · ${p.provider === "simulator" ? "имитатор" : "ЮKassa"} · ${p.label}`),
+          h("span", { class: "hint" }, p.provider_payment_id || "—"))) : h("div", { class: "hint" }, "Платежа ещё не было"),
+        c.payments.filter((p) => p.refund_error).map((p) => msg("err", "Последний возврат не прошёл: " + p.refund_error))),
+      h("div", { class: "card" }, h("b", {}, "Операции заказа"),
+        c.operations.length ? c.operations.map((x) => h("div", { class: "row" },
+          h("span", {}, (x.type === "receipt" ? "Поступление" : "Возврат") + " · " + when(x.occurred_at)),
+          h("span", { class: x.type === "receipt" ? "pos" : "neg" }, (x.type === "receipt" ? "+" : "−") + money(x.amount_kop)))) :
+          h("div", { class: "hint" }, "Операций нет: оплаты не было (в сводке этого заказа нет)")),
+      h("div", { class: "btns" }, btns)));
+  } catch (e) { fail(e); }
+}
+
+async function viewJournal() {
+  const { items } = await api(`/api/journal?from=${state.from}&to=${state.to}`);
+  const names = { receipt: "Поступление", refund: "Возврат", expense: "Расход" };
+  show(h("div", {}, periodBar(), items.length ? items.map((x) => {
+    const minus = x.type !== "receipt";
+    return h("div", { class: "card" },
+      h("div", { class: "row" + (x.voided_at ? " void" : "") }, h("b", {}, names[x.type] + (x.order_id ? " · заказ №" + x.order_id : "")),
+        h("span", { class: minus ? "neg" : "pos" }, (minus ? "−" : "+") + money(x.amount_kop))),
+      h("div", { class: "hint" }, when(x.occurred_at) + (x.category ? " · " + x.category : "") + (x.description ? " · " + x.description : "")),
+      x.voided_at ? h("div", { class: "hint" }, "Отменён " + when(x.voided_at)) : null,
+      x.replaces_id ? h("div", { class: "hint" }, "Исправление записи №" + x.replaces_id) : null,
+      x.type === "expense" && !x.voided_at ? h("div", { class: "btns" },
+        h("button", { class: "btn alt", onclick: () => { state.editing = x; state.rid = null; setTab("expense"); } }, "Исправить"),
+        h("button", { class: "btn alt", onclick: async (ev) => { if (!confirm("Отменить расход?")) return; ev.target.disabled = true;
+          try { await api(`/api/expenses/${x.id}/void`, "POST", {}); render(); } catch (e) { fail(e); } } }, "Отменить")) : null);
+  }) : msg("card", "Операций за период нет.")));
+}
+
+function viewExpense() {
+  const ed = state.editing; state.rid = state.rid || rid();
+  const cat = h("select", {}, state.me.categories.map((c) => h("option", { value: c, selected: ed && ed.category === c ? "selected" : null }, c)));
+  const amt = h("input", { type: "text", inputmode: "decimal", placeholder: "100", value: ed ? (ed.amount_kop / 100).toFixed(2) : "" });
+  const day = h("input", { type: "date", value: ed ? ed.occurred_at.slice(0, 10) : state.me.today, max: state.me.today });
+  const desc = h("input", { type: "text", maxlength: "200", placeholder: "Например: курьер за заказ №12", value: ed ? ed.description : "" });
+  const out = h("div", {});
+  const send = h("button", { class: "btn", onclick: async () => {
+    send.disabled = true; out.replaceChildren();
+    try {
+      const body = { category: cat.value, amount: amt.value, date: day.value, description: desc.value };
+      if (ed) await api(`/api/expenses/${ed.id}/edit`, "POST", body);
+      else await api("/api/expenses", "POST", { ...body, request_id: state.rid });
+      state.editing = null; state.rid = null; state.tab = "journal"; render();
+    } catch (e) { out.replaceChildren(msg("err", e.message)); send.disabled = false; }
+  } }, ed ? "Сохранить исправление" : "Записать расход");
+  show(h("div", { class: "card" }, h("b", {}, ed ? "Исправление расхода №" + ed.id : "Новый расход"),
+    h("div", { class: "hint" }, "Только операционные расходы (доставка, реклама…). Закупку товаров сюда не вносите — она уже в себестоимости."),
+    h("label", {}, "Категория"), cat, h("label", {}, "Сумма, ₽"), amt, h("label", {}, "Дата"), day,
+    h("label", {}, "Описание"), desc, out, send,
+    ed ? h("button", { class: "btn alt", style: "margin-left:8px", onclick: () => { state.editing = null; setTab("journal"); } }, "Отмена") : null));
+}
+
+async function viewStock(){
+  const d=await api('/api/stock');
+  const root=h('div',{},h('h2',{},'Один склад · живые остатки'),h('button',{class:'btn alt',onclick:render},'Обновить'));
+  for(const p of d.stock) root.append(h('div',{class:'card'},h('b',{},p.name),h('div',{class:'row'},'На складе / в резерве / доступно',`${p.on_hand} / ${p.reserved} / ${p.stock_available}`)));
+  const product=h('select',{},d.stock.map(p=>h('option',{value:p.id},p.name))),qty=h('input',{type:'number',min:1,max:10000,value:10}),out=h('div',{});
+  let receiveKey=rid(),saved=null;
+  const send=h('button',{class:'btn',onclick:async()=>{send.disabled=true;try{saved=saved||{product_id:Number(product.value),qty:Number(qty.value),request_key:receiveKey};await api('/api/stock/receive','POST',saved);await render()}catch(e){out.replaceChildren(msg('err',e.message));send.disabled=false;send.textContent='Повторить то же поступление'}}},'Оформить поступление');
+  root.append(h('div',{class:'card'},h('h2',{},'Поступление'),h('label',{},'Товар'),product,h('label',{},'Количество'),qty,out,send));
+  root.append(h('h2',{},'Резервы и заказы'));
+  for(const r of d.reservations){const left=Math.max(0,Math.ceil(r.expires_at-d.server_time));root.append(h('div',{class:'card'},h('b',{},`Заказ №${r.order_id} · ${r.state}`),h('p',{},`${r.customer_name} · ${money(r.total*100)}`),h('p',{class:'hint'},r.state==='active'?`Осталось ${left} сек. · до ${new Date(r.expires_at*1000).toLocaleString()}`:r.release_reason||'Продажа принята'),h('button',{class:'btn alt',onclick:()=>openOrder(r.order_id)},'Карточка заказа')))}
+  root.append(h('h2',{},'Полные возвраты'));
+  for(const j of d.refunds)root.append(h('div',{class:'card'},h('b',{},`Заказ №${j.order_id} · ${j.state}`),h('p',{},`${money(j.amount_kop)} · попыток ${j.attempts}`),h('p',{class:j.last_error?'err':'hint'},j.last_error||'Ошибок нет'),h('p',{class:'hint'},`Постоянный ключ: ${j.operation_key}`),j.state==='refund_pending'?h('button',{class:'btn alt',onclick:async()=>{await api(`/api/orders/${j.order_id}/refund/finish`,'POST',{});render()}},'Повторно проверить'):null));
+  root.append(h('h2',{},'Движения склада'));
+  const kinds={receipt:'Поступление',reserve:'Резерв',sale:'Продажа',release:'Освобождение',return:'Возврат товара'};
+  for(const j of d.journal)root.append(h('div',{class:'card'},h('b',{},`${kinds[j.kind]||j.kind} · ${j.name}`),h('p',{},`Склад: ${j.delta_hand>=0?'+':''}${j.delta_hand} / резерв: ${j.delta_reserved>=0?'+':''}${j.delta_reserved}`),h('p',{class:'hint'},`${new Date(j.occurred_at*1000).toLocaleString()} · ${j.author} · заказ ${j.order_id||'—'} · ${j.operation_key}`)));
+  show(root);
+}
+
+const TABS = [["stock","Склад"], ["summary", "Сводка"], ["orders", "Заказы"], ["journal", "Журнал"], ["expense", "Расход"]];
+function setTab(t) { state.tab = t; render(); }
+async function render() {
+  $("nav").replaceChildren(...TABS.map(([k, n]) => h("button", { class: state.tab === k ? "on" : "", onclick: () => setTab(k) }, n)));
+  show(h("div", { class: "hint" }, "Загрузка…"));
+  try {
+    if (!state.me) {
+      state.me = await api("/api/me");
+      if (state.me.demo) $("demo").replaceChildren(h("div", { class: "demo" }, "Демонстрация без платёжного провайдера"));
+      if (!state.from) calcPeriod("month");
+    }
+    if (state.tab === "summary") await viewSummary();
+    else if (state.tab === "orders") await viewOrders();
+    else if (state.tab === "journal") await viewJournal();
+    else if(state.tab === "stock") await viewStock();
+    else viewExpense();
+  } catch (e) { fail(e); }
+}
+render();
+</script>
+</body>
+</html>
